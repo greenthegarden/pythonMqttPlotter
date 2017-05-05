@@ -17,17 +17,21 @@ import matplotlib.pyplot as plt
 
 # based on code at http://block.arch.ethz.ch/blog/2016/08/dynamic-plotting-with-matplotlib/
 
-plt.figure(1)
+imu_fig = plt.figure(1)
 
-plt.subplot(211)
+#temp = plt.subplot(211)
+temp_ax = imu_fig.add_subplot(211)
+temp_ax.set_title('IMU Temperature')
 tempxdata = []
 tempydata = []
 tempaxes = plt.gca()
-plt.xlabel='time'
-plt.ylabel='temperature'
+temp_ax.set_xlabel=('time')
+temp_ax.set_ylabel=('temperature')
 templine, = tempaxes.plot(tempxdata, tempydata, 'r-')
 
-plt.subplot(212)
+#plt.subplot(212)
+pres_ax = imu_fig.add_subplot(212)
+pres_ax.set_title('IMU Pressure')
 presxdata = []
 presydata = []
 presaxes = plt.gca()
@@ -35,44 +39,41 @@ plt.xlabel='time'
 plt.ylabel='pressure'
 presline, = presaxes.plot(presxdata, presydata, 'r-')
 
-plt.figure(2)
+curr_fig = plt.figure(2)
 
-plt.subplot(111)
+curr_ax = curr_fig.add_subplot(111)
 currxdata = []
 currydata = []
 curraxes = plt.gca()
-plt.xlabel='time'
-plt.ylabel='current'
+curr_ax.set_title('Current')
+curr_ax.set_xlabel='time'
+curr_ax.set_ylabel='current'
 currline, = curraxes.plot(currxdata, currydata, 'r-')
 #plt.show()
 
-currtime = 0
-time = 0
+import time
 
 def plot_current(data) :
 	# data is a float
 	print(data)
-	global currtime
-	currtime = currtime+1
 	plt.figure(2)
 	plt.subplot(111)
-	currxdata.append(currtime)
+	currxdata.append(int(time.time()))
 	currydata.append(data)
 	currline.set_xdata(currxdata)
 	currline.set_ydata(currydata)
 	curraxes.relim()
 	curraxes.autoscale_view(False,True,True)
 	plt.draw()
-	plt.pause(1e-17)
+	plt.pause(0)
 
 def plot_update(data) :
 	# data is an float
 	print(data)
-	global time
-	time = time+1
+	timestamp = int(time.time())
 	plt.figure(1)
 	plt.subplot(211)
-	tempxdata.append(time)
+	tempxdata.append(timestamp)
 	tempydata.append(float(data['temperature']))
 	templine.set_xdata(tempxdata)
 	templine.set_ydata(tempydata)
@@ -80,14 +81,14 @@ def plot_update(data) :
 	tempaxes.autoscale_view(False,True,True)
 #	plt.draw()
 	plt.subplot(212)
-	presxdata.append(time)
+	presxdata.append(timestamp)
 	presydata.append(float(data['pressure']))
 	presline.set_xdata(presxdata)
 	presline.set_ydata(presydata)
 	presaxes.relim()
 	presaxes.autoscale_view(False,True,True)
 	plt.draw()
-	plt.pause(1e-17)
+	plt.pause(0)
 
 
 #---------------------------------------------------------------------------------------
