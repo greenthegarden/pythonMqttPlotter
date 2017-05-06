@@ -18,62 +18,82 @@ import matplotlib.pyplot as plt
 # based on code at http://block.arch.ethz.ch/blog/2016/08/dynamic-plotting-with-matplotlib/
 
 imu_fig = plt.figure(1)
+#imu_fig, ((temp_ax), (pres_ax)) = plt.subplots(nrows=2, ncols=1)
 
-#temp = plt.subplot(211)
+temp = plt.subplot(211)
 temp_ax = imu_fig.add_subplot(211)
-temp_ax.set_title('IMU Temperature')
 tempxdata = []
 tempydata = []
 tempaxes = plt.gca()
+temp_ax.set_title('IMU Temperature')
+#temp_ax.xaxis_date()
 temp_ax.set_xlabel=('time')
 temp_ax.set_ylabel=('temperature')
 templine, = tempaxes.plot(tempxdata, tempydata, 'r-')
 
-#plt.subplot(212)
+plt.subplot(212)
 pres_ax = imu_fig.add_subplot(212)
-pres_ax.set_title('IMU Pressure')
 presxdata = []
 presydata = []
 presaxes = plt.gca()
-plt.xlabel='time'
-plt.ylabel='pressure'
+pres_ax.set_title('IMU Pressure')
+#pres_ax.xaxis_date()
+pres_ax.xlabel='time'
+pres_ax.ylabel='pressure'
 presline, = presaxes.plot(presxdata, presydata, 'r-')
 
+plt.tight_layout()
+
 curr_fig = plt.figure(2)
+
+# rotate and align the tick labels so they look better
+curr_fig.autofmt_xdate()
+# use a more precise date string for the x axis locations in the
+# toolbar
+import matplotlib.dates as mdates
 
 curr_ax = curr_fig.add_subplot(111)
 currxdata = []
 currydata = []
 curraxes = plt.gca()
 curr_ax.set_title('Current')
+curr_ax.xaxis_date()
+#curr_ax.fmt_xdata = mdates.DateFormatter('%H:%M:%S')
 curr_ax.set_xlabel='time'
 curr_ax.set_ylabel='current'
 currline, = curraxes.plot(currxdata, currydata, 'r-')
 #plt.show()
 
+plt.tight_layout()
+
 import time
+import datetime
 
 def plot_current(data) :
 	# data is a float
 	print(data)
 	plt.figure(2)
 	plt.subplot(111)
-	currxdata.append(int(time.time()))
+#	timestamp = int(time.time())
+#	datestamp = datetime.datetime.fromtimestamp(timestamp)
+#	currxdata.append(int(time.time()))
+	currxdata.append(datetime.datetime.now())
 	currydata.append(data)
 	currline.set_xdata(currxdata)
 	currline.set_ydata(currydata)
 	curraxes.relim()
 	curraxes.autoscale_view(False,True,True)
 	plt.draw()
-	plt.pause(0)
+	plt.pause(1e-17)
 
 def plot_update(data) :
 	# data is an float
 	print(data)
 	timestamp = int(time.time())
+	datestamp = datetime.datetime.fromtimestamp(timestamp)
 	plt.figure(1)
 	plt.subplot(211)
-	tempxdata.append(timestamp)
+	tempxdata.append(datestamp)
 	tempydata.append(float(data['temperature']))
 	templine.set_xdata(tempxdata)
 	templine.set_ydata(tempydata)
@@ -88,7 +108,7 @@ def plot_update(data) :
 	presaxes.relim()
 	presaxes.autoscale_view(False,True,True)
 	plt.draw()
-	plt.pause(0)
+	plt.pause(1e-17)
 
 
 #---------------------------------------------------------------------------------------
