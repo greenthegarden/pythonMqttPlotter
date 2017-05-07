@@ -19,23 +19,26 @@ myFmt = mdates.DateFormatter('%H:%M:%S')
 
 # based on code at http://block.arch.ethz.ch/blog/2016/08/dynamic-plotting-with-matplotlib/
 
-imu_figure, (temp_axes, pres_axes) = plt.subplots(nrows=2, ncols=1)
+imu_figure, (temp_axes, pres_axes) = plt.subplots(nrows=2, ncols=1, sharex=True)
+imu_figure.autofmt_xdate()
 
 temp_axes.set_title('IMU Temperature')
-#temp_ax.xaxis_date()
-temp_axes.set_xlabel('time')
-temp_axes.set_ylabel('temperature')
+temp_axes.xaxis_date()
+temp_axes.xaxis.set_major_formatter(myFmt)
+#temp_axes.set_xlabel('time')
+temp_axes.set_ylabel('Temperature (oC)')
 temp_xdata = []
 temp_ydata = []
-temp_line, = temp_axes.plot(temp_xdata, temp_ydata, 'r-')
+temp_line, = temp_axes.plot(temp_xdata, temp_ydata, 'b-o')
 
 pres_axes.set_title('IMU Pressure')
-#pres_ax.xaxis_date()
-pres_axes.set_xlabel('time')
-pres_axes.set_ylabel('pressure')
+pres_axes.xaxis_date()
+pres_axes.xaxis.set_major_formatter(myFmt)
+pres_axes.set_xlabel('Time')
+pres_axes.set_ylabel('Pressure (hPa)')
 pres_xdata = []
 pres_ydata = []
-pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-')
+pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-*')
 
 plt.tight_layout()
 
@@ -44,11 +47,11 @@ curr_figure, curr_axes = plt.subplots()
 # rotate and align the tick labels so they look better
 curr_figure.autofmt_xdate()
 
-curr_axes.set_title('Current')
+curr_axes.set_title('ACS712 Current Sensor Measurements')
 curr_axes.xaxis_date()
 curr_axes.xaxis.set_major_formatter(myFmt)
-curr_axes.set_xlabel('time')
-curr_axes.set_ylabel('current')
+curr_axes.set_xlabel('Time')
+curr_axes.set_ylabel('Current (A)')
 curr_xdata = []
 curr_ydata = []
 curr_line, = curr_axes.plot(curr_xdata, curr_ydata, 'r-')
@@ -73,15 +76,14 @@ def plot_current(data) :
 def plot_update(data) :
 	# data is an json object
 	print(data)
-	timestamp = int(time.time())
-	datestamp = datetime.datetime.fromtimestamp(timestamp)
+	datestamp = datetime.datetime.now()
 	temp_xdata.append(datestamp)
 	temp_ydata.append(float(data['temperature']))
 	temp_line.set_xdata(temp_xdata)
 	temp_line.set_ydata(temp_ydata)
 	temp_axes.relim()
 	temp_axes.autoscale_view(False,True,True)
-	pres_xdata.append(timestamp)
+	pres_xdata.append(datestamp)
 	pres_ydata.append(float(data['pressure']))
 	pres_line.set_xdata(pres_xdata)
 	pres_line.set_ydata(pres_ydata)
