@@ -17,51 +17,48 @@ import matplotlib.pyplot as plt
 
 # based on code at http://block.arch.ethz.ch/blog/2016/08/dynamic-plotting-with-matplotlib/
 
-imu_fig = plt.figure(1)
+imu_figure = plt.figure(1)
 #imu_fig, ((temp_ax), (pres_ax)) = plt.subplots(nrows=2, ncols=1)
 
-temp = plt.subplot(211)
-temp_ax = imu_fig.add_subplot(211)
-tempxdata = []
-tempydata = []
-tempaxes = plt.gca()
-temp_ax.set_title('IMU Temperature')
+#temp = plt.subplot(211)
+temp_axes = imu_figure.add_subplot(211)
+temp_axes.set_title('IMU Temperature')
 #temp_ax.xaxis_date()
-temp_ax.set_xlabel=('time')
-temp_ax.set_ylabel=('temperature')
-templine, = tempaxes.plot(tempxdata, tempydata, 'r-')
+temp_axes.set_xlabel=('time')
+temp_axes.set_ylabel=('temperature')
+temp_xdata = []
+temp_ydata = []
+temp_line, = temp_axes.plot(temp_xdata, temp_ydata, 'r-')
 
-plt.subplot(212)
-pres_ax = imu_fig.add_subplot(212)
-presxdata = []
-presydata = []
-presaxes = plt.gca()
-pres_ax.set_title('IMU Pressure')
+#plt.subplot(212)
+pres_axes = imu_figure.add_subplot(212)
+pres_axes.set_title('IMU Pressure')
 #pres_ax.xaxis_date()
-pres_ax.xlabel='time'
-pres_ax.ylabel='pressure'
-presline, = presaxes.plot(presxdata, presydata, 'r-')
+pres_axes.xlabel='time'
+pres_axes.ylabel='pressure'
+pres_xdata = []
+pres_ydata = []
+pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-')
 
 plt.tight_layout()
 
-curr_fig = plt.figure(2)
+curr_figure = plt.figure(2)
 
 # rotate and align the tick labels so they look better
-curr_fig.autofmt_xdate()
+curr_figure.autofmt_xdate()
 # use a more precise date string for the x axis locations in the
 # toolbar
 import matplotlib.dates as mdates
 
-curr_ax = curr_fig.add_subplot(111)
-currxdata = []
-currydata = []
-curraxes = plt.gca()
-curr_ax.set_title('Current')
-curr_ax.xaxis_date()
+curr_axes = curr_figure.add_subplot(111)
+curr_axes.set_title('Current')
+curr_axes.xaxis_date()
 #curr_ax.fmt_xdata = mdates.DateFormatter('%H:%M:%S')
-curr_ax.set_xlabel='time'
-curr_ax.set_ylabel='current'
-currline, = curraxes.plot(currxdata, currydata, 'r-')
+curr_axes.set_xlabel='time'
+curr_axes.set_ylabel='current'
+curr_xdata = []
+curr_ydata = []
+curr_line, = curr_axes.plot(curr_xdata, curr_ydata, 'r-')
 #plt.show()
 
 plt.tight_layout()
@@ -73,16 +70,18 @@ def plot_current(data) :
 	# data is a float
 	print(data)
 	plt.figure(2)
-	plt.subplot(111)
+	curr_axes = plt.subplot(111)
 #	timestamp = int(time.time())
 #	datestamp = datetime.datetime.fromtimestamp(timestamp)
 #	currxdata.append(int(time.time()))
-	currxdata.append(datetime.datetime.now())
-	currydata.append(data)
-	currline.set_xdata(currxdata)
-	currline.set_ydata(currydata)
-	curraxes.relim()
-	curraxes.autoscale_view(False,True,True)
+	curr_xdata.append(datetime.datetime.now())
+	curr_ydata.append(data)
+	curr_line.set_xdata(curr_xdata)
+	curr_line.set_ydata(curr_ydata)
+	curr_axes.set_xlabel='time'
+	curr_axes.set_ylabel='current'
+	curr_axes.relim()
+	curr_axes.autoscale_view(False,True,True)
 	plt.draw()
 	plt.pause(1e-17)
 
@@ -93,20 +92,20 @@ def plot_update(data) :
 	datestamp = datetime.datetime.fromtimestamp(timestamp)
 	plt.figure(1)
 	plt.subplot(211)
-	tempxdata.append(datestamp)
-	tempydata.append(float(data['temperature']))
-	templine.set_xdata(tempxdata)
-	templine.set_ydata(tempydata)
-	tempaxes.relim()
-	tempaxes.autoscale_view(False,True,True)
+	temp_xdata.append(datestamp)
+	temp_ydata.append(float(data['temperature']))
+	temp_line.set_xdata(temp_xdata)
+	temp_line.set_ydata(temp_ydata)
+	temp_axes.relim()
+	temp_axes.autoscale_view(False,True,True)
 #	plt.draw()
 	plt.subplot(212)
-	presxdata.append(timestamp)
-	presydata.append(float(data['pressure']))
-	presline.set_xdata(presxdata)
-	presline.set_ydata(presydata)
-	presaxes.relim()
-	presaxes.autoscale_view(False,True,True)
+	pres_xdata.append(timestamp)
+	pres_ydata.append(float(data['pressure']))
+	pres_line.set_xdata(pres_xdata)
+	pres_line.set_ydata(pres_ydata)
+	pres_axes.relim()
+	pres_axes.autoscale_view(False,True,True)
 	plt.draw()
 	plt.pause(1e-17)
 
