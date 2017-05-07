@@ -17,11 +17,8 @@ import matplotlib.pyplot as plt
 
 # based on code at http://block.arch.ethz.ch/blog/2016/08/dynamic-plotting-with-matplotlib/
 
-imu_figure = plt.figure(1)
-#imu_fig, ((temp_ax), (pres_ax)) = plt.subplots(nrows=2, ncols=1)
+imu_figure, (temp_axes, pres_axes) = plt.subplots(nrows=2, ncols=1)
 
-
-temp_axes = imu_figure.add_subplot(211)
 temp_axes.set_title('IMU Temperature')
 #temp_ax.xaxis_date()
 temp_axes.set_xlabel('time')
@@ -30,7 +27,8 @@ temp_xdata = []
 temp_ydata = []
 temp_line, = temp_axes.plot(temp_xdata, temp_ydata, 'r-')
 
-pres_axes = imu_figure.add_subplot(212)
+#pres_axes = imu_figure.add_subplot(212)
+#pres_axes = imu_axes[1]
 pres_axes.set_title('IMU Pressure')
 #pres_ax.xaxis_date()
 pres_axes.set_xlabel('time')
@@ -41,6 +39,7 @@ pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-')
 
 plt.tight_layout()
 
+#curr_figure, curr_axes = plt.subplots()
 curr_figure = plt.figure(2)
 
 # rotate and align the tick labels so they look better
@@ -58,7 +57,6 @@ curr_axes.set_ylabel('current')
 curr_xdata = []
 curr_ydata = []
 curr_line, = curr_axes.plot(curr_xdata, curr_ydata, 'r-')
-#plt.show()
 
 plt.tight_layout()
 
