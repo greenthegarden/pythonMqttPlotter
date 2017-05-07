@@ -20,22 +20,21 @@ import matplotlib.pyplot as plt
 imu_figure = plt.figure(1)
 #imu_fig, ((temp_ax), (pres_ax)) = plt.subplots(nrows=2, ncols=1)
 
-#temp = plt.subplot(211)
+
 temp_axes = imu_figure.add_subplot(211)
 temp_axes.set_title('IMU Temperature')
 #temp_ax.xaxis_date()
-temp_axes.set_xlabel=('time')
-temp_axes.set_ylabel=('temperature')
+temp_axes.set_xlabel('time')
+temp_axes.set_ylabel('temperature')
 temp_xdata = []
 temp_ydata = []
 temp_line, = temp_axes.plot(temp_xdata, temp_ydata, 'r-')
 
-#plt.subplot(212)
 pres_axes = imu_figure.add_subplot(212)
 pres_axes.set_title('IMU Pressure')
 #pres_ax.xaxis_date()
-pres_axes.xlabel='time'
-pres_axes.ylabel='pressure'
+pres_axes.set_xlabel('time')
+pres_axes.set_ylabel('pressure')
 pres_xdata = []
 pres_ydata = []
 pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-')
@@ -54,8 +53,8 @@ curr_axes = curr_figure.add_subplot(111)
 curr_axes.set_title('Current')
 curr_axes.xaxis_date()
 #curr_ax.fmt_xdata = mdates.DateFormatter('%H:%M:%S')
-curr_axes.set_xlabel='time'
-curr_axes.set_ylabel='current'
+curr_axes.set_xlabel('time')
+curr_axes.set_ylabel('current')
 curr_xdata = []
 curr_ydata = []
 curr_line, = curr_axes.plot(curr_xdata, curr_ydata, 'r-')
@@ -78,15 +77,13 @@ def plot_current(data) :
 	curr_ydata.append(data)
 	curr_line.set_xdata(curr_xdata)
 	curr_line.set_ydata(curr_ydata)
-	curr_axes.set_xlabel='time'
-	curr_axes.set_ylabel='current'
 	curr_axes.relim()
 	curr_axes.autoscale_view(False,True,True)
 	plt.draw()
 	plt.pause(1e-17)
 
 def plot_update(data) :
-	# data is an float
+	# data is an json object
 	print(data)
 	timestamp = int(time.time())
 	datestamp = datetime.datetime.fromtimestamp(timestamp)
@@ -182,7 +179,7 @@ def tidyupAndExit() :
 	running = False       #Stop thread1
 	# Disconnect mqtt client			mqttc.loop_stop()
 	mqttc.disconnect()
-	plt.show()
+#	plt.show()
 	print("Bye")
 	sys.exit(0)
 
