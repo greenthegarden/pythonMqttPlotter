@@ -39,8 +39,8 @@ pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-')
 
 plt.tight_layout()
 
-#curr_figure, curr_axes = plt.subplots()
-curr_figure = plt.figure(2)
+curr_figure, curr_axes = plt.subplots()
+#curr_figure = plt.figure(2)
 
 # rotate and align the tick labels so they look better
 curr_figure.autofmt_xdate()
@@ -48,7 +48,7 @@ curr_figure.autofmt_xdate()
 # toolbar
 import matplotlib.dates as mdates
 
-curr_axes = curr_figure.add_subplot(111)
+#curr_axes = curr_figure.add_subplot(111)
 curr_axes.set_title('Current')
 curr_axes.xaxis_date()
 #curr_ax.fmt_xdata = mdates.DateFormatter('%H:%M:%S')
@@ -66,8 +66,8 @@ import datetime
 def plot_current(data) :
 	# data is a float
 	print(data)
-	plt.figure(2)
-	curr_axes = plt.subplot(111)
+#	plt.figure(2)
+#	curr_axes = plt.subplot(111)
 #	timestamp = int(time.time())
 #	datestamp = datetime.datetime.fromtimestamp(timestamp)
 #	currxdata.append(int(time.time()))
@@ -85,8 +85,8 @@ def plot_update(data) :
 	print(data)
 	timestamp = int(time.time())
 	datestamp = datetime.datetime.fromtimestamp(timestamp)
-	plt.figure(1)
-	plt.subplot(211)
+#	plt.figure(1)
+#	plt.subplot(211)
 	temp_xdata.append(datestamp)
 	temp_ydata.append(float(data['temperature']))
 	temp_line.set_xdata(temp_xdata)
@@ -94,7 +94,7 @@ def plot_update(data) :
 	temp_axes.relim()
 	temp_axes.autoscale_view(False,True,True)
 #	plt.draw()
-	plt.subplot(212)
+#	plt.subplot(212)
 	pres_xdata.append(timestamp)
 	pres_ydata.append(float(data['pressure']))
 	pres_line.set_xdata(pres_xdata)
