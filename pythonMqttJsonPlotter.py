@@ -14,6 +14,8 @@ print("{0}".format("Python MQTT Json Plotter"))
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+myFmt = mdates.DateFormatter('%H:%M:%S')
 
 # based on code at http://block.arch.ethz.ch/blog/2016/08/dynamic-plotting-with-matplotlib/
 
@@ -27,8 +29,6 @@ temp_xdata = []
 temp_ydata = []
 temp_line, = temp_axes.plot(temp_xdata, temp_ydata, 'r-')
 
-#pres_axes = imu_figure.add_subplot(212)
-#pres_axes = imu_axes[1]
 pres_axes.set_title('IMU Pressure')
 #pres_ax.xaxis_date()
 pres_axes.set_xlabel('time')
@@ -40,18 +40,13 @@ pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-')
 plt.tight_layout()
 
 curr_figure, curr_axes = plt.subplots()
-#curr_figure = plt.figure(2)
 
 # rotate and align the tick labels so they look better
 curr_figure.autofmt_xdate()
-# use a more precise date string for the x axis locations in the
-# toolbar
-import matplotlib.dates as mdates
 
-#curr_axes = curr_figure.add_subplot(111)
 curr_axes.set_title('Current')
 curr_axes.xaxis_date()
-#curr_ax.fmt_xdata = mdates.DateFormatter('%H:%M:%S')
+curr_axes.xaxis.set_major_formatter(myFmt)
 curr_axes.set_xlabel('time')
 curr_axes.set_ylabel('current')
 curr_xdata = []
@@ -66,11 +61,6 @@ import datetime
 def plot_current(data) :
 	# data is a float
 	print(data)
-#	plt.figure(2)
-#	curr_axes = plt.subplot(111)
-#	timestamp = int(time.time())
-#	datestamp = datetime.datetime.fromtimestamp(timestamp)
-#	currxdata.append(int(time.time()))
 	curr_xdata.append(datetime.datetime.now())
 	curr_ydata.append(data)
 	curr_line.set_xdata(curr_xdata)
@@ -85,16 +75,12 @@ def plot_update(data) :
 	print(data)
 	timestamp = int(time.time())
 	datestamp = datetime.datetime.fromtimestamp(timestamp)
-#	plt.figure(1)
-#	plt.subplot(211)
 	temp_xdata.append(datestamp)
 	temp_ydata.append(float(data['temperature']))
 	temp_line.set_xdata(temp_xdata)
 	temp_line.set_ydata(temp_ydata)
 	temp_axes.relim()
 	temp_axes.autoscale_view(False,True,True)
-#	plt.draw()
-#	plt.subplot(212)
 	pres_xdata.append(timestamp)
 	pres_ydata.append(float(data['pressure']))
 	pres_line.set_xdata(pres_xdata)
