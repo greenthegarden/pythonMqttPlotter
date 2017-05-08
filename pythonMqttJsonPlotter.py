@@ -42,19 +42,39 @@ pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-*')
 
 plt.tight_layout()
 
-curr_figure, curr_axes = plt.subplots()
+# curr_figure, curr_axes = plt.subplots()
+#
+# # rotate and align the tick labels so they look better
+# curr_figure.autofmt_xdate()
+#
+# curr_axes.set_title('ACS712 Current Sensor Measurements')
+# curr_axes.xaxis_date()
+# curr_axes.xaxis.set_major_formatter(myFmt)
+# curr_axes.set_xlabel('Time')
+# curr_axes.set_ylabel('Current (A)')
+# curr_xdata = []
+# curr_ydata = []
+# curr_line, = curr_axes.plot(curr_xdata, curr_ydata, 'r-')
 
-# rotate and align the tick labels so they look better
-curr_figure.autofmt_xdate()
+pow_figure, pow_axes = plt.subplots(nrows=2, ncols=1, sharex=True)
 
-curr_axes.set_title('ACS712 Current Sensor Measurements')
-curr_axes.xaxis_date()
-curr_axes.xaxis.set_major_formatter(myFmt)
-curr_axes.set_xlabel('Time')
-curr_axes.set_ylabel('Current (A)')
+pow_axes[0].set_title('ACS712 Current Sensor Measurements')
+pow_axes[0].xaxis_date()
+pow_axes[0].xaxis.set_major_formatter(myFmt)
+pow_axes[0].set_xlabel('Time')
+pow_axes[0].set_ylabel('Current (A)')
 curr_xdata = []
 curr_ydata = []
-curr_line, = curr_axes.plot(curr_xdata, curr_ydata, 'r-')
+curr_line, = pow_axes[0].plot(curr_xdata, curr_ydata, 'b-*')
+
+pow_axes[1].set_title('Voltage Divider Measurements')
+pow_axes[1].xaxis_date()
+pow_axes[1].xaxis.set_major_formatter(myFmt)
+pow_axes[1].set_xlabel('Time')
+pow_axes[1].set_ylabel('Voltage (V)')
+volt_xdata = []
+volt_ydata = []
+volt_line, = pow_axes[1].plot(volt_xdata, volt_ydata, 'r-o')
 
 plt.tight_layout()
 
@@ -68,8 +88,20 @@ def plot_current(data) :
 	curr_ydata.append(data)
 	curr_line.set_xdata(curr_xdata)
 	curr_line.set_ydata(curr_ydata)
-	curr_axes.relim()
-	curr_axes.autoscale_view(False,True,True)
+	pow_axes[0].relim()
+	pow_axes[0].autoscale_view(False,True,True)
+	plt.draw()
+	plt.pause(1e-17)
+
+def plot_voltage(data) :
+	# data is a float
+	print(data)
+	volt_xdata.append(datetime.datetime.now())
+	volt_ydata.append(data)
+	volt_line.set_xdata(volt_xdata)
+	volt_line.set_ydata(volt_ydata)
+	pow_axes[1].relim()
+	pow_axes[1].autoscale_view(False,True,True)
 	plt.draw()
 	plt.pause(1e-17)
 
@@ -122,6 +154,8 @@ def on_message(client, userdata, message) :
 		plot_update(data)
 	elif (message.topic == "relayshield/measurement/current") :
 		plot_current(float(message.payload.decode(encoding='UTF-8',errors='strict')))
+	elif (message.topic == "relayshield/measurement/voltage") :
+		plot_voltage(float(message.payload.decode(encoding='UTF-8',errors='strict')))
 
 def on_publish(client, userdata, mid) :
     print("mid: {0}".format(str(mid)))
