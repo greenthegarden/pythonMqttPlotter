@@ -12,33 +12,48 @@ config = ConfigObj('/home/philip/Development/projects/python/pythonMqttPlotter/p
 print("{0}".format("Python MQTT Json Plotter"))
 
 
+#---------------------------------------------------------------------------------------
+# Configure plots
+#
+#---------------------------------------------------------------------------------------
+
 import numpy as np
 import matplotlib.pyplot as plt
+
+from matplotlib.ticker import FormatStrFormatter
+
 import matplotlib.dates as mdates
-myFmt = mdates.DateFormatter('%H:%M:%S')
+DateFmt = mdates.DateFormatter('%H:%M')
 
 # based on code at http://block.arch.ethz.ch/blog/2016/08/dynamic-plotting-with-matplotlib/
 
-imu_figure, (temp_axes, pres_axes) = plt.subplots(nrows=2, ncols=1, sharex=True)
+imu_figure, imu_axes = plt.subplots(nrows=2, ncols=1, sharex=True)
 imu_figure.autofmt_xdate()
 
-temp_axes.set_title('IMU Temperature')
-temp_axes.xaxis_date()
-temp_axes.xaxis.set_major_formatter(myFmt)
+temp_idx = 0
+pres_idx = 1
+
+idx = temp_idx
+imu_axes[idx].set_title('IMU Temperature')
+imu_axes[idx].xaxis_date()
+imu_axes[idx].xaxis.set_major_formatter(DateFmt)
 #temp_axes.set_xlabel('time')
-temp_axes.set_ylabel('Temperature (oC)')
+imu_axes[idx].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+imu_axes[idx].set_ylabel('Temperature (oC)')
 temp_xdata = []
 temp_ydata = []
-temp_line, = temp_axes.plot(temp_xdata, temp_ydata, 'b-o')
+temp_line, = imu_axes[temp_idx].plot(temp_xdata, temp_ydata, 'b-o')
 
-pres_axes.set_title('IMU Pressure')
-pres_axes.xaxis_date()
-pres_axes.xaxis.set_major_formatter(myFmt)
-pres_axes.set_xlabel('Time')
-pres_axes.set_ylabel('Pressure (hPa)')
+idx = pres_idx
+imu_axes[idx].set_title('IMU Pressure')
+imu_axes[idx].xaxis_date()
+imu_axes[idx].xaxis.set_major_formatter(DateFmt)
+imu_axes[idx].set_xlabel('Time')
+imu_axes[idx].yaxis.set_major_formatter(FormatStrFormatter('%.0f'))
+imu_axes[idx].set_ylabel('Pressure (hPa)')
 pres_xdata = []
 pres_ydata = []
-pres_line, = pres_axes.plot(pres_xdata, pres_ydata, 'r-*')
+pres_line, = imu_axes[idx].plot(pres_xdata, pres_ydata, 'r-*')
 
 plt.tight_layout()
 
@@ -57,70 +72,79 @@ plt.tight_layout()
 # curr_line, = curr_axes.plot(curr_xdata, curr_ydata, 'r-')
 
 pow_figure, pow_axes = plt.subplots(nrows=2, ncols=1, sharex=True)
+pow_figure.autofmt_xdate()
 
-pow_axes[0].set_title('ACS712 Current Sensor Measurements')
-pow_axes[0].xaxis_date()
-pow_axes[0].xaxis.set_major_formatter(myFmt)
-pow_axes[0].set_xlabel('Time')
-pow_axes[0].set_ylabel('Current (A)')
+curr_idx = 0
+volt_idx = 1
+
+idx = curr_idx
+pow_axes[idx].set_title('ACS712 Current Sensor Measurements')
+pow_axes[idx].xaxis_date()
+pow_axes[idx].xaxis.set_major_formatter(DateFmt)
+#pow_axes[idx].set_xlabel('Time')
+pow_axes[idx].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+pow_axes[idx].set_ylabel('Current (A)')
 curr_xdata = []
 curr_ydata = []
-curr_line, = pow_axes[0].plot(curr_xdata, curr_ydata, 'b-*')
+curr_line, = pow_axes[idx].plot(curr_xdata, curr_ydata, 'b-*')
 
-pow_axes[1].set_title('Voltage Divider Measurements')
-pow_axes[1].xaxis_date()
-pow_axes[1].xaxis.set_major_formatter(myFmt)
-pow_axes[1].set_xlabel('Time')
-pow_axes[1].set_ylabel('Voltage (V)')
+idx = volt_idx
+pow_axes[idx].set_title('Voltage Divider Measurements')
+pow_axes[idx].xaxis_date()
+pow_axes[idx].xaxis.set_major_formatter(DateFmt)
+pow_axes[idx].set_xlabel('Time')
+pow_axes[idx].yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+pow_axes[idx].set_ylabel('Voltage (V)')
 volt_xdata = []
 volt_ydata = []
-volt_line, = pow_axes[1].plot(volt_xdata, volt_ydata, 'r-o')
+volt_line, = pow_axes[idx].plot(volt_xdata, volt_ydata, 'r-o')
 
 plt.tight_layout()
 
-import time
+#import time
 import datetime
 
 def plot_current(data) :
 	# data is a float
-	print(data)
+	idx = curr_idx
 	curr_xdata.append(datetime.datetime.now())
 	curr_ydata.append(data)
 	curr_line.set_xdata(curr_xdata)
 	curr_line.set_ydata(curr_ydata)
-	pow_axes[0].relim()
-	pow_axes[0].autoscale_view(False,True,True)
+	pow_axes[curr_idx].relim()
+	pow_axes[curr_idx].autoscale_view(False,True,True)
 	plt.draw()
 	plt.pause(1e-17)
 
 def plot_voltage(data) :
 	# data is a float
-	print(data)
+	idx = volt_idx
 	volt_xdata.append(datetime.datetime.now())
 	volt_ydata.append(data)
 	volt_line.set_xdata(volt_xdata)
 	volt_line.set_ydata(volt_ydata)
-	pow_axes[1].relim()
-	pow_axes[1].autoscale_view(False,True,True)
+	pow_axes[idx].relim()
+	pow_axes[idx].autoscale_view(False,True,True)
 	plt.draw()
 	plt.pause(1e-17)
 
 def plot_update(data) :
 	# data is an json object
-	print(data)
 	datestamp = datetime.datetime.now()
+	idx = temp_idx
 	temp_xdata.append(datestamp)
 	temp_ydata.append(float(data['temperature']))
 	temp_line.set_xdata(temp_xdata)
 	temp_line.set_ydata(temp_ydata)
-	temp_axes.relim()
-	temp_axes.autoscale_view(False,True,True)
+	imu_axes[idx].relim()
+	imu_axes[idx].autoscale_view(False,True,True)
+	idx = pres_idx
 	pres_xdata.append(datestamp)
 	pres_ydata.append(float(data['pressure']))
 	pres_line.set_xdata(pres_xdata)
 	pres_line.set_ydata(pres_ydata)
-	pres_axes.relim()
-	pres_axes.autoscale_view(False,True,True)
+	imu_axes[idx].relim()
+	imu_axes[idx].autoscale_view(False,True,True)
 	plt.draw()
 	plt.pause(1e-17)
 
